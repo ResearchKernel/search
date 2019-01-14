@@ -1,4 +1,4 @@
-An ML based search service powering the search capabilities in the application. 
+An ML based RESTful search service powering the search capabilities in the application. 
 
 ## Tech Stack:
 
