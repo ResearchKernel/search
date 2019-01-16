@@ -129,8 +129,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # ElasticSearch settings
-
-ES_SERVER_URL = 'http://localhost:9200/'
-ES_INDEX_NAME = 'arxivdb'
-ES_FIELD_LIMIT = 1000000
-ES_DOCUMENT_TYPE = "research-papers"
+ES_SERVER_URL = os.environ.get('ES_SERVER_URL', None)
+ES_INDEX_NAME = os.environ.get('ES_INDEX_NAME', None)
+ES_FIELD_LIMIT = os.environ.get('ES_FIELD_LIMIT', None)
+ES_DOCUMENT_TYPE = os.environ.get('ES_DOCUMENT_TYPE', None)
