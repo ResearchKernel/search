@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'papers',
 ]
 
 MIDDLEWARE = [
@@ -126,3 +127,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# ElasticSearch settings
+
+ES_SERVER_URL = 'http://localhost:9200/'
+ES_INDEX_NAME = 'arxivdb'
+ES_FIELD_LIMIT = 1000000
+ES_DOCUMENT_TYPE = "research-papers"
