@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'papers',
 ]
 
 MIDDLEWARE = [
@@ -126,3 +127,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# ElasticSearch settings
+ES_SERVER_URL = os.environ.get('ES_SERVER_URL', None)
+ES_INDEX_NAME = os.environ.get('ES_INDEX_NAME', None)
+ES_FIELD_LIMIT = os.environ.get('ES_FIELD_LIMIT', None)
+ES_DOCUMENT_TYPE = os.environ.get('ES_DOCUMENT_TYPE', None)
