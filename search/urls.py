@@ -7,4 +7,5 @@ admin.site.site_title = "ResearchKernel : Admin"
 
 urlpatterns = [
     url('api/v1/papers/', include('papers.urls')),
+    url(r'^search/', include('haystack.urls')),
 ]
