@@ -51,6 +51,7 @@ def dump_json_to_elasticsearchdb():
     if str(response.status_code) not in ACCEPTABLE_ERROR_CODES:
         logger.info("Uh Oh! Ran into a data upload error :/ ")
 
+
 class Command(BaseCommand):
     def handle(self, *args, **options):
         dump_json_to_elasticsearchdb()

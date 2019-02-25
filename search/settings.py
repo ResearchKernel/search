@@ -51,7 +51,6 @@ INSTALLED_APPS = [
     'django_extensions',
     'django_elasticsearch_dsl',
     'django_elasticsearch_dsl_drf',
-
 ]
 
 MIDDLEWARE = [
@@ -154,9 +153,10 @@ ELASTICSEARCH_DSL = {
 # Haystack
 HAYSTACK_CONNECTIONS = {
     'default': {
-        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
-        'URL': 'http://127.0.0.1:9200/',
-        'INDEX_NAME': 'arxivdb',
+        'ENGINE': 'haystack.backends.elasticsearch_backend.'
+                  'ElasticsearchSearchEngine',
+        'URL': ES_SERVER_URL,
+        'INDEX_NAME': ES_INDEX_NAME,
     },
 }
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'

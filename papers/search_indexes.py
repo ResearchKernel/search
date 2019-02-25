@@ -1,6 +1,4 @@
-from .mixins import BaseModelMixin
 from haystack import indexes as haystack_indexes
-import datetime
 from .models import Paper
 
 
