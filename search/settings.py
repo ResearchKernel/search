@@ -49,8 +49,6 @@ INSTALLED_APPS = [
     'papers',
     'rest_framework',
     'django_extensions',
-    'django_elasticsearch_dsl',
-    'django_elasticsearch_dsl_drf',
 ]
 
 MIDDLEWARE = [
@@ -159,4 +157,3 @@ HAYSTACK_CONNECTIONS = {
         'INDEX_NAME': ES_INDEX_NAME,
     },
 }
-HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
