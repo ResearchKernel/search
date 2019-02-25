@@ -1,13 +1,22 @@
-import requests
 import logging
-from search.settings import ES_SERVER_URL, ES_INDEX_NAME, ES_DOCUMENT_TYPE, ES_FIELD_LIMIT
+
+import requests
+from django.conf import settings
 from django.core.management.base import BaseCommand
 
 logger = logging.getLogger(__name__)
 
+
 def dump_json_to_elasticsearchdb():
+
     ACCEPTABLE_ERROR_CODES = ["200", "201"]
-    
+
+    # Defining server consts
+    ES_FIELD_LIMIT = settings.ES_FIELD_LIMIT
+    ES_SERVER_URL = settings.ES_SERVER_URL
+    ES_INDEX_NAME = settings.ES_INDEX_NAME
+    ES_DOCUMENT_TYPE = settings.ES_DOCUMENT_TYPE
+
     # Create an ES index
     index_url = ES_SERVER_URL + ES_INDEX_NAME
     logger.info("ES Index URL: {}".format(index_url))
