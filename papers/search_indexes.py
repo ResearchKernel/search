@@ -3,6 +3,7 @@ from haystack import indexes as haystack_indexes
 import datetime
 from .models import Paper
 
+
 class PaperIndex(haystack_indexes.SearchIndex, haystack_indexes.Indexable):
     """
         Model definition for research paper

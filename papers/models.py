@@ -2,6 +2,7 @@ from .mixins import BaseModelMixin
 from django.db import models
 import datetime
 
+
 class Paper(BaseModelMixin):
     """
         Model definition for research paper
