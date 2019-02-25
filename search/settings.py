@@ -45,7 +45,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'haystack',
     'papers',
+    'rest_framework',
+    'django_extensions',
+    'django_elasticsearch_dsl',
+    'django_elasticsearch_dsl_drf',
+
 ]
 
 MIDDLEWARE = [
@@ -133,3 +139,20 @@ ES_SERVER_URL = os.environ.get('ES_SERVER_URL', None)
 ES_INDEX_NAME = os.environ.get('ES_INDEX_NAME', None)
 ES_FIELD_LIMIT = os.environ.get('ES_FIELD_LIMIT', None)
 ES_DOCUMENT_TYPE = os.environ.get('ES_DOCUMENT_TYPE', None)
+
+# Elasticsearch configuration
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': 'localhost:9200'
+    },
+}
+
+# Haystack
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+        'URL': 'http://127.0.0.1:9200/',
+        'INDEX_NAME': 'papers',
+    },
+}
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
