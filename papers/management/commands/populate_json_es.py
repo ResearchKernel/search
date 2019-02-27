@@ -5,6 +5,19 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 
 logger = logging.getLogger(__name__)
+import json
+
+from pprint import pprint
+
+
+def validate_json(data):
+    try:
+        json.loads(data)
+        return True
+    except ValueError:
+        print("Invalid json:")
+        pprint(data)
+        return False
 
 
 def dump_json_to_elasticsearchdb():
@@ -42,11 +55,23 @@ def dump_json_to_elasticsearchdb():
     load_data_url = ES_SERVER_URL + ES_INDEX_NAME + "/" + ES_DOCUMENT_TYPE
     logger.info("ES Data Load URL: {}".format(load_data_url))
 
-    requests.post(
-        url=load_data_url,
-        data=open('data.json', 'rb'),
-        headers=headers
-    )
+    # Open file
+    with open('data.json') as f:
+        data = json.load(f)
+
+    # Load data sequentially
+    for key, value in data.items():
+
+        paper = {}
+        paper[key] = value
+        paper = json.dumps(paper)
+
+        if validate_json(paper):
+            requests.post(
+                url=load_data_url,
+                data=paper,
+                headers=headers
+            )
 
     if str(response.status_code) not in ACCEPTABLE_ERROR_CODES:
         logger.info("Uh Oh! Ran into a data upload error :/ ")
