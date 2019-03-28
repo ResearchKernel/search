@@ -1,13 +1,15 @@
+import json
 import logging
+from datetime import datetime
+from pprint import pprint
 
 import requests
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-logger = logging.getLogger(__name__)
-import json
+from papers.constants import DB_STRUCTURE
 
-from pprint import pprint
+logger = logging.getLogger(__name__)
 
 
 def validate_json(data):
@@ -33,7 +35,7 @@ def dump_json_to_elasticsearchdb():
     # Create an ES index
     index_url = ES_SERVER_URL + ES_INDEX_NAME
     logger.info("ES Index URL: {}".format(index_url))
-    requests.put(index_url)
+    requests.put(url=index_url, data=DB_STRUCTURE)
 
     # Increase field upload count to accommodate our json data
     headers = {'Accept' : 'application/json', 'Content-Type' : 'application/json'}
@@ -64,8 +66,10 @@ def dump_json_to_elasticsearchdb():
 
         paper = {}
         paper[key] = value
-        paper = json.dumps(paper)
-
+        # paper = json.dumps(paper)
+        # import pdb; pdb.set_trace()
+        datetime.strptime(paper['6220']['created'], "%Y-%m-%d %H:%M:%S")
+        paper['created'] = datetime.strptime(paper['created'], "%Y-%m-%d %H:%M:%S.%f")
         if validate_json(paper):
             requests.post(
                 url=load_data_url,
