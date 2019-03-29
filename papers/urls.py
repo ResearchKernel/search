@@ -4,12 +4,12 @@ from .views import *
 
 urlpatterns = [
     url(
-        r'^search/$',
+        r'^papers/search$',
         FetchPapersView.as_view(),
         name='search-papers',
     ),
     url(
-        r'^search/recent$',
+        r'^papers/recent$',
         RecentPaperView.as_view(),
         name='recent-papers',
     ),
