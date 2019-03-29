@@ -22,7 +22,19 @@ class FetchPapersView(APIView):
         if end_date:
             end_date = convert_date_to_es_format(end_date)
 
-        if not end_date:
+        if start_date and end_date:
+            query = {
+                "query": {
+                    "range": {
+                        "created": {
+                            "gte": start_date,
+                            "lte": end_date,
+                            "format": "yyyy-MM-dd"
+                        }
+                    }
+                }
+            }
+        elif start_date and not end_date:
             query = {
                 "query": {
                     "match" : {
@@ -31,17 +43,7 @@ class FetchPapersView(APIView):
                 }
             }
         else:
-            query = {
-                "query": {
-                    "range": {
-                        "created": {
-                        "gte": start_date,
-                        "lte": end_date,
-                        "format": "yyyy-MM-dd"
-                        }
-                    }
-                }
-            }
+            query = {}
 
         # Initializing ElasticSearch client
         es = Elasticsearch()
