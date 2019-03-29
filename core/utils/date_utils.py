@@ -11,3 +11,7 @@ def convert_date_to_es_format(date):
     new_date = date_list[2] + '-' + date_list[1] + '-' + date_list[0]
 
     return new_date
+
+
+def get_today_date():
+    return datetime.datetime.today().strftime('%Y-%m-%d')
