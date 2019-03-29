@@ -8,4 +8,9 @@ urlpatterns = [
         FetchPapersView.as_view(),
         name='search-papers',
     ),
+    url(
+        r'^search/recent$',
+        RecentPaperView.as_view(),
+        name='recent-papers',
+    ),
 ]
