@@ -1,10 +1,10 @@
 import requests
-from elasticsearch import Elasticsearch
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from core.utils.date_utils import convert_date_to_es_format, get_today_date
+from elasticsearch import Elasticsearch
 from search import settings
 
 from .constants import SEARCH_URL
