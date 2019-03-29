@@ -7,20 +7,18 @@ from core.utils.date_utils import convert_date_to_es_format
 from search import settings
 
 from .constants import SEARCH_URL
+from elasticsearch import Elasticsearch
 
 
 class FetchPapersView(APIView):
 
     def get(self, request, **kwargs):
 
-        # Fetching query params
+        # Fetching query params and preparing request data
         start_date = request.GET.get('start_date')
         end_date = request.GET.get('end_date')
-
-        # Sending out request to ElasticSearch server to return search results
         start_date = convert_date_to_es_format(start_date)
         end_date = convert_date_to_es_format(end_date)
-
         query = {
             "query": {
                 "range": {
@@ -33,10 +31,12 @@ class FetchPapersView(APIView):
             }
         }
 
-        response = requests.post(
-            url=settings.ES_SERVER_URL + SEARCH_URL,
-            headers={'Content-Type': 'application/json'},
-            data=str(query),
+        # Initializing ElasticSearch client
+        es = Elasticsearch()
+        # Sending out request to ElasticSearch server to return search results
+        response = es.search(
+            index=settings.ES_INDEX_NAME,
+            body=query
         )
 
         return Response(response, status=status.HTTP_200_OK)
