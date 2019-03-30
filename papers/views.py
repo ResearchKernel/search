@@ -1,4 +1,3 @@
-import requests
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -6,8 +5,6 @@ from rest_framework.views import APIView
 from core.utils.date_utils import convert_date_to_es_format, get_today_date
 from elasticsearch import Elasticsearch
 from search import settings
-
-from .constants import SEARCH_URL
 
 
 class FetchPapersView(APIView):
@@ -37,8 +34,8 @@ class FetchPapersView(APIView):
         elif start_date and not end_date:
             query = {
                 "query": {
-                    "match" : {
-                        "created" : start_date
+                    "match": {
+                        "created": start_date
                     }
                 }
             }
