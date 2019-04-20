@@ -1,5 +1,3 @@
 DJANGO_SECRET_KEY = "**************************************************"
 ES_SERVER_URL = 'http://IP:PORT/'
 ES_INDEX_NAME = '*********'
-ES_FIELD_LIMIT = *********
-ES_DOCUMENT_TYPE = "************"
