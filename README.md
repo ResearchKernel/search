@@ -7,8 +7,6 @@ An ML backed RESTful search service powering the search capabilities in the appl
 * Django
 * Python
 * Elasticsearch
-* Kibana
-* Logstash
 
 ## Before you begin:
 
