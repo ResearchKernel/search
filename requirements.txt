@@ -3,14 +3,12 @@ chardet==3.0.4
 construct==2.5.3
 Django==2.1.5
 django-extensions==2.1.6
-django-haystack==2.8.1
 djangorestframework==3.9.1
 elasticsearch==6.3.1
 entrypoints==0.3
 envparse==0.2.0
 flake8==3.7.6
 future==0.17.1
-haystack==0.42
 idna==2.8
 isort==4.3.7
 mccabe==0.6.1
