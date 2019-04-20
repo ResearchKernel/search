@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'haystack',
     'papers',
     'rest_framework',
     'django_extensions',
@@ -147,15 +146,5 @@ ES_DOCUMENT_TYPE = os.environ.get('ES_DOCUMENT_TYPE', None)
 ELASTICSEARCH_DSL = {
     'default': {
         'hosts': 'localhost:9200'
-    },
-}
-
-# Haystack
-HAYSTACK_CONNECTIONS = {
-    'default': {
-        'ENGINE': 'haystack.backends.elasticsearch_backend.'
-                  'ElasticsearchSearchEngine',
-        'URL': ES_SERVER_URL,
-        'INDEX_NAME': ES_INDEX_NAME,
     },
 }
