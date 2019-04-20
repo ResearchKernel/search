@@ -1,7 +1,7 @@
 
 # A reservoir to maintain the various queries used in the search APIs
 
-primary_category_query={
+primary_category_query = {
   "query": {
     "bool": {
       "must": [
@@ -26,7 +26,7 @@ primary_category_query={
   },
 }
 
-category_query={
+category_query = {
   "query": {
     "bool": {
       "must": [
@@ -51,7 +51,7 @@ category_query={
   },
 }
 
-recent_query =  {
+recent_query = {
   "query": {
     "match": {
       "created": None,
