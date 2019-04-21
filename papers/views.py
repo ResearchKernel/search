@@ -33,12 +33,12 @@ class FetchPapersView(APIView):
 
         # If filtering is based on the primary category
         if primary_category is not None:
-            query = core_queries.primary_category_query
+            query = core_queries.abstract_primary_category_query
             query['query']['bool']['must'][0]['match']['primary_category'] = primary_category
 
         # If filtering is based on the secondary query
         elif category is not None:
-            query = core_queries.category_query
+            query = core_queries.abstract_category_query
             query['query']['bool']['must'][0]['match']['categories'] = category
 
         # Based on the start and end dates we tweak our ES query
@@ -71,7 +71,7 @@ class RecentPaperView(APIView):
         """
         # Forming filter today's papers query
         today = get_today_date()
-        query = core_queries.recent_query
+        query = core_queries.abstract_recent_query
         query['query']['match']['created'] = today
 
         # Initializing ElasticSearch client
