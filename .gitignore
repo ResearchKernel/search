@@ -105,3 +105,8 @@ venv.bak/
 
 .idea/
 
+# Environment variable
+.env
+
+env
+.vscode/settings.json
