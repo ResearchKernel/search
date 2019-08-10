@@ -1,8 +1,11 @@
 
 # A reservoir to maintain the various queries used in the search APIs
 
-abstract_primary_category_query = {
-    "from": 0, "size": 10,
+
+# This query fetch papers based on primary categories we have on researchkernel, with filterable dates and pagination.
+
+get_primary_category_query = {
+    "from": None, "size": 10,
     "query": {
         "bool": {
             "must": [
@@ -27,8 +30,8 @@ abstract_primary_category_query = {
     },
 }
 
-abstract_category_query = {
-    "from": 0, "size": 10,
+get_sub_category_query = {
+    "from": None, "size": 10,
     "query": {
         "bool": {
             "must": [
@@ -54,7 +57,7 @@ abstract_category_query = {
 }
 
 abstract_recent_query = {
-    "from": 0, "size": 10,
+    "from": None, "size": 10,
     "query": {
         "match": {
             "created": None,
@@ -65,7 +68,7 @@ abstract_recent_query = {
 #----------------------------------------Universal Search APIs----------------------------------------#
 
 universal_search = {
-    "from": 0, "size": 10,
+    "from": None, "size": 10,
     "query": {
         "multi_match": {
             "query": None,
@@ -83,7 +86,7 @@ universal_search = {
 }
 
 primary_category_search = {
-    "from": 0, "size": 10,
+    "from": None, "size": 10,
     "query": {
         "bool": {
             "should": [
@@ -115,7 +118,7 @@ primary_category_search = {
 # Search for authors
 
 search_author = {
-    "from": 0, "size": 10,
+    "from": None, "size": 10,
     "query": {
         "bool": {
             "must": [
@@ -143,7 +146,7 @@ search_author = {
 # Search for Title
 
 search_title = {
-    "from": 0, "size": 10,
+    "from": None, "size": 10,
     "query": {
         "bool": {
             "must": [
@@ -171,7 +174,7 @@ search_title = {
 # Search for Abstract
 
 search_abstract = {
-    "from": 0, "size": 10,
+    "from": None, "size": 10,
     "query": {
         "bool": {
             "must": [
@@ -200,7 +203,7 @@ search_abstract = {
 # Search for Arxiv_id
 
 search_arxiv = {
-    "from": 0, "size": 10,
+    "from": None, "size": 10,
     "query": {
         "bool": {
             "must": [

@@ -1,16 +1,16 @@
 from django.conf.urls import url
 
-from .views import FetchPapersView, RecentPaperView
+from .views import FetchCateogryPapersView, RecentPaperView
 
 urlpatterns = [
     url(
-        r'^papers/search$',
-        FetchPapersView.as_view(),
-        name='search-papers',
+        r'^papers$',
+        FetchCateogryPapersView.as_view(),
+        name='get-feed-papers',
     ),
     url(
         r'^papers/recent$',
         RecentPaperView.as_view(),
-        name='recent-papers',
-    ),
+        name='get-recent-papers',
+    )
 ]

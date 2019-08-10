@@ -8,8 +8,7 @@ from core.utils.date_utils import convert_date_to_es_format, get_today_date
 from search import settings
 
 
-class FetchPapersView(APIView):
-
+class FetchCateogryPapersView(APIView):
     def get(self, request, **kwargs):
         """
             The API is designed to perform filtered query on ElasticSearch
@@ -23,6 +22,8 @@ class FetchPapersView(APIView):
         category = request.data.get('category', None)
         start_date = request.GET.get('start_date', None)
         end_date = request.GET.get('end_date', None)
+        to = request.GET.get('to', None)
+        till = request.GET.get('from', None)
         query = {}
 
         # Depending on the start/end date filters we convert them to ES time format
@@ -33,22 +34,23 @@ class FetchPapersView(APIView):
 
         # If filtering is based on the primary category
         if primary_category is not None:
-            query = core_queries.abstract_primary_category_query
+            query = core_queries.get_primary_category_query
             query['query']['bool']['must'][0]['match']['primary_category'] = primary_category
 
         # If filtering is based on the secondary query
         elif category is not None:
-            query = core_queries.abstract_category_query
+            query = core_queries.get_sub_category_query
             query['query']['bool']['must'][0]['match']['categories'] = category
 
         # Based on the start and end dates we tweak our ES query
         if start_date and end_date:
-            query['query']['bool']['filter'][0]['range']['created']['lte'] = start_date
-            query['query']['bool']['filter'][0]['range']['created']['gte'] = end_date
+            query['query']['bool']['filter'][0]['range']['created']['lte'] = end_date
+            query['query']['bool']['filter'][0]['range']['created']['gte'] = start_date
         elif start_date and not end_date:
-            query['query']['bool']['filter'][0]['range']['created']['lte'] = start_date
-            query['query']['bool']['filter'][0]['range']['created'].pop('gte')
-
+            query['query']['bool']['filter'][0]['range']['created']['gte'] = start_date
+            query['query']['bool']['filter'][0]['range']['created'].pop('lte')
+        query['from'] = to
+        query['to'] = till
         # Initializing ElasticSearch client
         es = Elasticsearch()
         # Sending out request to ElasticSearch server to return search results
