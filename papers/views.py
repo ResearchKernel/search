@@ -85,3 +85,82 @@ class RecentPaperView(APIView):
         )
 
         return Response(response, status=status.HTTP_200_OK)
+
+
+class UniversalSearch(APIView):
+
+    def get(self, request, **kwargs):
+        """
+        This API is designed to return the simple Search resuts, it accepts a search query and that will be searched in all the fields.
+        :param request:
+        :param kwargs:
+        :return:
+        """
+        # Forming filter today's papers query
+        q = request.GET.get('query', None)
+        to = request.GET.get('to', "0")
+        till = request.GET.get('from', '10')
+        query = core_queries.universal_search
+        query['query']['multi_match']['query'] = q
+        query['to'] = to
+        query['from'] = till
+        # Initializing ElasticSearch client
+        es = Elasticsearch()
+        # Sending out request to ElasticSearch server to return search results
+        response = es.search(
+            index=settings.ES_INDEX_NAME,
+            body=query
+        )
+
+        return Response(response, status=status.HTTP_200_OK)
+
+
+class AdvanceSearch(APIView):
+
+    def get(self, request, **kwargs):
+        """
+        This API is designed to return the Advanced Search resuts, it taked only one query param at at a time. 
+        :param request:
+        :param kwargs:
+        :return:
+        """
+        # Forming filter today's papers query
+        q = request.data.get('query', None)
+        arxiv_id = request.data.get('arxiv_id', None)
+        author = request.data.get('author', None)
+        title = request.data.get('title', None)
+        abstract = request.data.get('abstract', None)
+        start_date = request.GET.get('start_date', None)
+        end_date = request.GET.get('end_date', None)
+        to = request.GET.get('to', None)
+        till = request.GET.get('from', None)
+        query = {}
+
+        # Depending on the start/end date filters we convert them to ES time format
+        if start_date:
+            start_date = convert_date_to_es_format(start_date)
+        if end_date:
+            end_date = convert_date_to_es_format(end_date)
+
+        # Search Query building
+        query = core_queries.advance_search
+
+        if arxiv_id is not None:
+            query['query']['bool']['must'][0]['match']['arxiv_id'] = arxiv_id
+        if author is not None:
+            query['query']['bool']['must'][0]['match']['author'] = author
+        if title is not None:
+            query['query']['bool']['must'][0]['match']['title'] = title
+        if abstract is not None:
+            query['query']['bool']['must'][0]['match']['abstract'] = abstract
+        query['to'] = to
+        query['from'] = till
+        # Initializing ElasticSearch client
+        es = Elasticsearch()
+        # Sending out request to ElasticSearch server to return search results
+        response = es.search(
+            index=settings.ES_INDEX_NAME,
+            body=query
+        )
+
+        return Response(response, status=status.HTTP_200_OK)

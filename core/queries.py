@@ -1,3 +1,4 @@
+from gunicorn.six import advance_iterator
 
 # A reservoir to maintain the various queries used in the search APIs
 
@@ -68,7 +69,7 @@ abstract_recent_query = {
 #----------------------------------------Universal Search APIs----------------------------------------#
 
 universal_search = {
-    "from": None, "size": 10,
+    "from": 0, "size": 10,
     "query": {
         "multi_match": {
             "query": None,
@@ -84,132 +85,17 @@ universal_search = {
         }
     }
 }
-
-primary_category_search = {
-    "from": None, "size": 10,
-    "query": {
-        "bool": {
-            "should": [
-                {
-                    "multi_match": {
-                        "query": None,
-                        "type": "cross_fields",
-                        "fields": [
-                            "arxiv_id",
-                            "abstract",
-                            "title",
-                            "abstract",
-                            "authors",
-                            "doi"
-                        ]
-                    }
-                }
-            ],
-            "filter": {
-                "term": {
-                    "primary_category": None
-                }
-            }
-        }
-    }
-}
-
 #----------------------------------------Advanced Search APIs------------------------------------------#
-# Search for authors
-
-search_author = {
+# Search for any one field at at time.
+advance_search = {
     "from": None, "size": 10,
     "query": {
         "bool": {
             "must": [
                 {
                     "match": {
-                        "authors": None
-                    }
-                }
-            ],
-            "filter": [
-                {
-                    "range": {
-                        "created": {
-                            "gte": None,
-                            "lte": None,
-                            "format": "yyyy-MM-dd"
-                        }
-                    }
-                }
-            ]
-        }
-    }
-}
+                        # add any number of field for filtering results here
 
-# Search for Title
-
-search_title = {
-    "from": None, "size": 10,
-    "query": {
-        "bool": {
-            "must": [
-                {
-                    "match": {
-                        "title": None
-                    }
-                }
-            ],
-            "filter": [
-                {
-                    "range": {
-                        "created": {
-                            "gte": None,
-                            "lte": None,
-                            "format": "yyyy-MM-dd"
-                        }
-                    }
-                }
-            ]
-        }
-    }
-}
-
-# Search for Abstract
-
-search_abstract = {
-    "from": None, "size": 10,
-    "query": {
-        "bool": {
-            "must": [
-                {
-                    "match": {
-                        "abstract": None
-                    }
-                }
-            ],
-            "filter": [
-                {
-                    "range": {
-                        "created": {
-                            "gte": None,
-                            "lte": None,
-                            "format": "yyyy-MM-dd"
-                        }
-                    }
-                }
-            ]
-        }
-    }
-}
-
-
-# Search for Arxiv_id
-
-search_arxiv = {
-    "from": None, "size": 10,
-    "query": {
-        "bool": {
-            "must": [
-                {
-                    "match": {
-                        "arxiv_id": None
                     }
                 }
             ],
