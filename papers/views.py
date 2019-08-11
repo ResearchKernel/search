@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 
 from core import queries as core_queries
 from core.utils.date_utils import convert_date_to_es_format, get_today_date
+from core.utils.response_parser import es_request_parser
 from search import settings
 
 
@@ -58,7 +59,7 @@ class FetchCateogryPapersView(APIView):
             index=settings.ES_INDEX_NAME,
             body=query,
         )
-
+        response = es_request_parser(response)
         return Response(response, status=status.HTTP_200_OK)
 
 
@@ -83,7 +84,7 @@ class RecentPaperView(APIView):
             index=settings.ES_INDEX_NAME,
             body=query
         )
-
+        response = es_request_parser(response)
         return Response(response, status=status.HTTP_200_OK)
 
 
@@ -98,12 +99,12 @@ class UniversalSearch(APIView):
         """
         # Forming filter today's papers query
         q = request.GET.get('query', None)
-        to = request.GET.get('to', "0")
-        till = request.GET.get('from', '10')
+        to = request.GET.get('to', 0)
+        till = request.GET.get('from', 10)
         query = core_queries.universal_search
         query['query']['multi_match']['query'] = q
-        query['to'] = to
-        query['from'] = till
+        # query['to'] = to
+        # query['from'] = till
         # Initializing ElasticSearch client
         es = Elasticsearch()
         # Sending out request to ElasticSearch server to return search results
@@ -111,7 +112,7 @@ class UniversalSearch(APIView):
             index=settings.ES_INDEX_NAME,
             body=query
         )
-
+        response = es_request_parser(response)
         return Response(response, status=status.HTTP_200_OK)
 
 
@@ -162,5 +163,5 @@ class AdvanceSearch(APIView):
             index=settings.ES_INDEX_NAME,
             body=query
         )
-
+        response = es_request_parser(response)
         return Response(response, status=status.HTTP_200_OK)
