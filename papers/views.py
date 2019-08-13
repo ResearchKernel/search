@@ -1,15 +1,16 @@
-from elasticsearch import Elasticsearch
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from core import queries as core_queries
 from core.utils.date_utils import convert_date_to_es_format, get_today_date
-from core.utils.response_parser import es_request_parser
-from search import settings
+from papers.utils import send_es_request
 
 
-class FetchCateogryPapersView(APIView):
+class FetchCategoryPapersView(APIView):
+    """
+    FetchCategoryPapersView
+    """
     def get(self, request, **kwargs):
         """
             The API is designed to perform filtered query on ElasticSearch
@@ -52,14 +53,7 @@ class FetchCateogryPapersView(APIView):
             query['query']['bool']['filter'][0]['range']['created'].pop('lte')
         query['from'] = to
         query['to'] = till
-        # Initializing ElasticSearch client
-        es = Elasticsearch()
-        # Sending out request to ElasticSearch server to return search results
-        response = es.search(
-            index=settings.ES_INDEX_NAME,
-            body=query,
-        )
-        response = es_request_parser(response)
+        response = send_es_request(query)
         return Response(response, status=status.HTTP_200_OK)
 
 
@@ -76,15 +70,8 @@ class RecentPaperView(APIView):
         today = get_today_date()
         query = core_queries.abstract_recent_query
         query['query']['match']['created'] = today
+        response = send_es_request(query)
 
-        # Initializing ElasticSearch client
-        es = Elasticsearch()
-        # Sending out request to ElasticSearch server to return search results
-        response = es.search(
-            index=settings.ES_INDEX_NAME,
-            body=query
-        )
-        response = es_request_parser(response)
         return Response(response, status=status.HTTP_200_OK)
 
 
@@ -92,7 +79,7 @@ class UniversalSearch(APIView):
 
     def get(self, request, **kwargs):
         """
-        This API is designed to return the simple Search resuts, it accepts a search query and that will be searched in all the fields.
+        This API is designed to return the simple Search results, it accepts a search query and that will be searched in all the fields.
         :param request:
         :param kwargs:
         :return:
@@ -103,30 +90,24 @@ class UniversalSearch(APIView):
         till = request.GET.get('from', 10)
         query = core_queries.universal_search
         query['query']['multi_match']['query'] = q
-        # query['to'] = to
-        # query['from'] = till
-        # Initializing ElasticSearch client
-        es = Elasticsearch()
-        # Sending out request to ElasticSearch server to return search results
-        response = es.search(
-            index=settings.ES_INDEX_NAME,
-            body=query
-        )
-        response = es_request_parser(response)
+        query['to'] = to
+        query['from'] = till
+        response = send_es_request(query)
+
         return Response(response, status=status.HTTP_200_OK)
 
 
-class AdvanceSearch(APIView):
+class AdvancedSearch(APIView):
 
     def get(self, request, **kwargs):
         """
-        This API is designed to return the Advanced Search resuts, it taked only one query param at at a time. 
+        This API is designed to return the Advanced Search results, it took only one query param at at a time.
         :param request:
         :param kwargs:
         :return:
         """
         # Forming filter today's papers query
-        q = request.data.get('query', None)
+        query = request.data.get('query', None)
         arxiv_id = request.data.get('arxiv_id', None)
         author = request.data.get('author', None)
         title = request.data.get('title', None)
@@ -156,12 +137,7 @@ class AdvanceSearch(APIView):
             query['query']['bool']['must'][0]['match']['abstract'] = abstract
         query['to'] = to
         query['from'] = till
-        # Initializing ElasticSearch client
-        es = Elasticsearch()
-        # Sending out request to ElasticSearch server to return search results
-        response = es.search(
-            index=settings.ES_INDEX_NAME,
-            body=query
-        )
-        response = es_request_parser(response)
+
+        response = send_es_request(query)
+
         return Response(response, status=status.HTTP_200_OK)

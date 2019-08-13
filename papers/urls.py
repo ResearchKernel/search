@@ -1,11 +1,11 @@
 from django.conf.urls import url
 
-from .views import FetchCateogryPapersView, RecentPaperView, UniversalSearch
+from .views import FetchCategoryPapersView, RecentPaperView, UniversalSearch
 
 urlpatterns = [
     url(
         r'^papers$',
-        FetchCateogryPapersView.as_view(),
+        FetchCategoryPapersView.as_view(),
         name='get-feed-papers',
     ),
     url(
