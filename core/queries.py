@@ -6,7 +6,7 @@ from gunicorn.six import advance_iterator
 # This query fetch papers based on primary categories we have on researchkernel, with filterable dates and pagination.
 
 get_primary_category_query = {
-    "from": None, "size": 10,
+    "from": 0, "size": 10,
     "query": {
         "bool": {
             "must": [
@@ -32,7 +32,7 @@ get_primary_category_query = {
 }
 
 get_sub_category_query = {
-    "from": None, "size": 10,
+    "from": 0, "size": 10,
     "query": {
         "bool": {
             "must": [
@@ -58,7 +58,7 @@ get_sub_category_query = {
 }
 
 abstract_recent_query = {
-    "from": None, "size": 10,
+    "from": 0, "size": 10,
     "query": {
         "match": {
             "created": None,
@@ -88,7 +88,7 @@ universal_search = {
 #----------------------------------------Advanced Search APIs------------------------------------------#
 # Search for any one field at at time.
 advance_search = {
-    "from": None, "size": 10,
+    "from": 0, "size": 10,
     "query": {
         "bool": {
             "must": [
