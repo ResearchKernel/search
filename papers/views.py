@@ -1,14 +1,16 @@
-from elasticsearch import Elasticsearch
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from core import queries as core_queries
 from core.utils.date_utils import convert_date_to_es_format, get_today_date
-from search import settings
+from papers.utils import send_es_request
 
 
-class FetchPapersView(APIView):
+class FetchCategoryPapersView(APIView):
+    """
+    FetchCategoryPapersView
+    """
 
     def get(self, request, **kwargs):
         """
@@ -23,6 +25,8 @@ class FetchPapersView(APIView):
         category = request.data.get('category', None)
         start_date = request.GET.get('start_date', None)
         end_date = request.GET.get('end_date', None)
+        offset = request.GET.get('offset', None)
+        size = request.GET.get('size', None)
         query = {}
 
         # Depending on the start/end date filters we convert them to ES time format
@@ -33,30 +37,24 @@ class FetchPapersView(APIView):
 
         # If filtering is based on the primary category
         if primary_category is not None:
-            query = core_queries.abstract_primary_category_query
+            query = core_queries.get_primary_category_query
             query['query']['bool']['must'][0]['match']['primary_category'] = primary_category
 
         # If filtering is based on the secondary query
         elif category is not None:
-            query = core_queries.abstract_category_query
+            query = core_queries.get_sub_category_query
             query['query']['bool']['must'][0]['match']['categories'] = category
 
         # Based on the start and end dates we tweak our ES query
         if start_date and end_date:
-            query['query']['bool']['filter'][0]['range']['created']['lte'] = start_date
-            query['query']['bool']['filter'][0]['range']['created']['gte'] = end_date
+            query['query']['bool']['filter'][0]['range']['created']['lte'] = end_date
+            query['query']['bool']['filter'][0]['range']['created']['gte'] = start_date
         elif start_date and not end_date:
-            query['query']['bool']['filter'][0]['range']['created']['lte'] = start_date
-            query['query']['bool']['filter'][0]['range']['created'].pop('gte')
-
-        # Initializing ElasticSearch client
-        es = Elasticsearch()
-        # Sending out request to ElasticSearch server to return search results
-        response = es.search(
-            index=settings.ES_INDEX_NAME,
-            body=query,
-        )
-
+            query['query']['bool']['filter'][0]['range']['created']['gte'] = start_date
+            query['query']['bool']['filter'][0]['range']['created'].pop('lte')
+        query['from'] = offset
+        query['size'] = size
+        response = send_es_request(query)
         return Response(response, status=status.HTTP_200_OK)
 
 
@@ -71,15 +69,80 @@ class RecentPaperView(APIView):
         """
         # Forming filter today's papers query
         today = get_today_date()
+        offset = request.GET.get('offset', None)
+        size = request.GET.get('size', None)
         query = core_queries.abstract_recent_query
         query['query']['match']['created'] = today
+        query['from'] = offset
+        query['size'] = size
+        response = send_es_request(query)
 
-        # Initializing ElasticSearch client
-        es = Elasticsearch()
-        # Sending out request to ElasticSearch server to return search results
-        response = es.search(
-            index=settings.ES_INDEX_NAME,
-            body=query
-        )
+        return Response(response, status=status.HTTP_200_OK)
+
+
+class UniversalSearch(APIView):
+
+    def get(self, request, **kwargs):
+        """
+        This API is designed to return the simple Search results, it accepts a search query and that will be searched in all the fields.
+        :param request:
+        :param kwargs:
+        :return:
+        """
+        # Forming filter today's papers query
+        q = request.GET.get('query', None)
+        offset = request.GET.get('offset', None)
+        size = request.GET.get('size', None)
+        query = core_queries.universal_search
+        query['query']['multi_match']['query'] = q
+        query['from'] = offset
+        query['size'] = size
+        response = send_es_request(query)
+
+        return Response(response, status=status.HTTP_200_OK)
+
+
+class AdvancedSearch(APIView):
+
+    def get(self, request, **kwargs):
+        """
+        This API is designed to return the Advanced Search results, it took only one query param at at a time.
+        :param request:
+        :param kwargs:
+        :return:
+        """
+        # Forming filter today's papers query
+        arxiv_id = request.data.get('arxiv_id', None)
+        author = request.data.get('author', None)
+        title = request.data.get('title', None)
+        abstract = request.data.get('abstract', None)
+        start_date = request.GET.get('start_date', None)
+        end_date = request.GET.get('end_date', None)
+        offset = request.GET.get('offset', None)
+        size = request.GET.get('size', None)
+        query = {}
+
+        # Depending on the start/end date filters we convert them to ES time format
+        if start_date:
+            start_date = convert_date_to_es_format(start_date)
+        if end_date:
+            end_date = convert_date_to_es_format(end_date)
+
+        # Search Query building
+        query = core_queries.advance_search
+        print
+        if arxiv_id is not None:
+            query['query']['bool']['must'][0]['match']['arxiv_id'] = arxiv_id
+        if author is not None:
+            query['query']['bool']['must'][0]['match']['author'] = author
+        if title is not None:
+            query['query']['bool']['must'][0]['match']['title'] = title
+        if abstract is not None:
+            query['query']['bool']['must'][0]['match']['abstract'] = abstract
+        query['from'] = offset
+        query['size'] = size
+        print(query)
+
+        response = send_es_request(query)
 
         return Response(response, status=status.HTTP_200_OK)
