@@ -21,8 +21,8 @@ class FetchCategoryPapersView(APIView):
         """
 
         # Fetching query params and preparing request data
-        primary_category = request.data.get('primary_category', None)
-        category = request.data.get('category', None)
+        primary_category = request.GET.get('primary_category', None)
+        category = request.GET.get('category', None)
         start_date = request.GET.get('start_date', None)
         end_date = request.GET.get('end_date', None)
         offset = request.GET.get('offset', None)
