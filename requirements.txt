@@ -3,7 +3,7 @@ chardet==3.0.4
 construct==2.5.3
 Django==2.1.11
 django-extensions==2.1.6
-djangorestframework==3.9.1
+djangorestframework==3.11.2
 elasticsearch==6.3.1
 entrypoints==0.3
 envparse==0.2.0
